@@ -1,0 +1,40 @@
+import cv2
+import numpy as np
+
+# 加载边缘检测结果
+def load_edge_result():
+    file_path = r"C:\Users\HP\PycharmProjects\PythonProject7\edge_result.txt"
+    with open(file_path, 'r') as f:
+        data = [int(line.strip()) for line in f if line.strip()]
+    
+    # 调整数据大小到200x200
+    if len(data) != 40000:
+        if len(data) < 40000:
+            data.extend([0] * (40000 - len(data)))
+        else:
+            data = data[:40000]
+    
+    return np.array(data, dtype=np.uint8).reshape(200, 200)
+
+# 主函数
+def main():
+    # 加载原始图片
+    original = cv2.imread(r"C:\Users\HP\Desktop\33c85cdb43c129c1c8125c5757b59bd6.jpg")
+    original_gray = cv2.cvtColor(original, cv2.COLOR_BGR2GRAY)
+    original_resized = cv2.resize(original_gray, (200, 200))
+    
+    # 加载边缘检测结果
+    edge_result = load_edge_result()
+    
+    # 放大显示
+    original_big = cv2.resize(original_resized, (600, 600))
+    edge_big = cv2.resize(edge_result, (600, 600))
+    
+    # 合并显示
+    combined = np.hstack([original_big, edge_big])
+    cv2.imshow('Original vs Edge Detection', combined)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
